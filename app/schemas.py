@@ -1,4 +1,5 @@
 import re
+from datetime import datetime
 from typing import Optional
 
 from pydantic import BaseModel, ConfigDict, field_validator
@@ -29,6 +30,20 @@ class UserResponse(BaseModel):
 class UserLogin(BaseModel):
     username:str
     password:str
+
+class TaskResponse(BaseModel):
+    id:int
+    title:str
+    description:Optional[str]=None
+    created_at:datetime
+    owner:UserResponse
+    model_config = ConfigDict(from_attributes=True)
+
+class TaskCreate(BaseModel):
+    title:str
+    description:Optional[str]=None
+
+class TaskUpdate(TaskCreate): pass
 
 class Token(BaseModel):
     access_token:str

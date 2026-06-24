@@ -1,5 +1,8 @@
 from datetime import timedelta, datetime
 from typing import Optional
+
+from sqlalchemy.orm import Session
+
 from app import schemas,JWTtoken,models
 from fastapi import HTTPException
 from jose import jwt,JWTError
@@ -18,16 +21,16 @@ def create_access_token(data: dict,expires_delta:Optional[timedelta] = None):
     encoded_jwt = jwt.encode(to_encode,SECRET_KEY,ALGORITHM)
     return encoded_jwt
 
-def verify_token(token: str,credentials_exception: HTTPException):
+def verify_token(token: str, credentials_exception: HTTPException, db: Session):
     try:
-        payload = jwt.decode(token,SECRET_KEY,algorithms=JWTtoken.ALGORITHM)
-        username: str = payload.get("username")
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        username: str = payload.get("sub")
         if username is None:
             raise credentials_exception
-        token_data = schemas.TokenData(username=username)
-    except JWTError:
+    except JWTError as e:
         raise credentials_exception
-    user = models.User.get(username=schemas.TokenData.username)
+
+    user = db.query(models.User).filter(models.User.username == username).first()
     if user is None:
         raise credentials_exception
     return user

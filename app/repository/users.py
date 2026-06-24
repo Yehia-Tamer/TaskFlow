@@ -18,15 +18,11 @@ def create(request,db):
     db.refresh(user)
     return user
 
-def get(user_id,db):
+def get(user_id,db,current_user):
+    if(user_id!=current_user.id):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
     user = db.query(models.User).filter(models.User.id == user_id).first()
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
     return user
 
-def delete(user_id,db):
-    user = db.query(models.User).filter(models.User.id == user_id).first()
-    if not user:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
-    db.delete(user)
-    db.commit()
