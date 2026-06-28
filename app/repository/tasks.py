@@ -1,11 +1,7 @@
 from datetime import datetime
-
 from fastapi import HTTPException
-from sqlalchemy.sql.functions import current_user
 from starlette import status
-
 from app import models
-from app.models import Task
 
 
 def all(db,current_user):
@@ -20,21 +16,21 @@ def create(request,db,current_user):
     return task
 
 def get(task_id,db,current_user):
-    task=db.query(models.Task).filter(models.Task.id == task_id and models.Task.owner_id==current_user.id).first()
+    task=db.query(models.Task).filter(models.Task.id == task_id,models.Task.owner_id==current_user.id).first()
     if not task:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Task not found")
     return task
 
 def delete(task_id,db,current_user):
-    task=db.query(models.Task).filter(models.Task.id == task_id and models.Task.owner_id==current_user.id).first()
+    task=db.query(models.Task).filter(models.Task.id == task_id,models.Task.owner_id==current_user.id).first()
     if not task:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Task not found")
     db.delete(task)
     db.commit()
-    return 'task deleted successfully'
+    return None
 
 def update(id,request,db,current_user):
-    task=db.query(models.Task).filter(models.Task.id == id and models.Task.owner_id==current_user.id).first()
+    task=db.query(models.Task).filter(models.Task.id == id,models.Task.owner_id==current_user.id).first()
     if not task:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Task not found")
     task.title = request.title

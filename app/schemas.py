@@ -3,8 +3,6 @@ from datetime import datetime, date
 from typing import Optional
 
 from pydantic import BaseModel, ConfigDict, field_validator, EmailStr
-from sqlalchemy import Date
-
 
 class UserCreate(BaseModel):
     username:str
