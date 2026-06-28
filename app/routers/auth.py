@@ -1,3 +1,4 @@
+import os
 from datetime import timedelta
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -16,6 +17,6 @@ def login(request:OAuth2PasswordRequestForm=Depends(),db:Session = Depends(datab
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="Incorrect username or password")
     if not Hash.verify(request.password,user.hashed_password):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Incorrect password")
-    access_token_expires=timedelta(minutes=JWTtoken.ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token_expires=timedelta(minutes=int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES")))
     access_token=JWTtoken.create_access_token(data={"sub":user.username},expires_delta=access_token_expires)
     return {"access_token":access_token,"token_type":"bearer"}

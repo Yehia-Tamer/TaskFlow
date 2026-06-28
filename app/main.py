@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from app import models
-from app.routers import users,auth,tasks
+from app.routers import users, auth, tasks, task_completions
 from app.database import engine
 
 app = FastAPI()
@@ -12,3 +12,4 @@ def main():
 app.include_router(users.router)
 app.include_router(tasks.router)
 app.include_router(auth.router)
+app.include_router(task_completions.router)

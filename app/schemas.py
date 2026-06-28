@@ -1,13 +1,14 @@
 import re
-from datetime import datetime
+from datetime import datetime, date
 from typing import Optional
 
-from pydantic import BaseModel, ConfigDict, field_validator
+from pydantic import BaseModel, ConfigDict, field_validator, EmailStr
+from sqlalchemy import Date
 
 
 class UserCreate(BaseModel):
     username:str
-    email:str
+    email:EmailStr
     password:str
 
     @field_validator('password')
@@ -51,3 +52,8 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     username:Optional[str]=None
+
+class TaskCompletionResponse(BaseModel):
+    task_id:int
+    completed_at:date
+    model_config = ConfigDict(from_attributes=True)
