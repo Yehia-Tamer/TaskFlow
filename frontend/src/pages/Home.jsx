@@ -5,8 +5,30 @@ import axios from 'axios';
 import TaskCard from '../components/TaskCard/TaskCard';
 import TaskForm from '../components/TaskForm/TaskForm';
 import TaskDetailPopup from '../components/TaskDetailPopup/TaskDetailPopup';
+import CompletionPopup from '../components/CompletionPopup/CompletionPopup';
 import Popup from '../components/Popup/Popup';
 import './Home.css';
+
+function lerp(a, b, t) {
+    return Math.round(a + (b - a) * t);
+}
+
+function getBarColor(pct) {
+    // gradient red -> yellow -> green
+    const red = { r: 239, g: 68, b: 68 };
+    const yellow = { r: 234, g: 179, b: 8 };
+    const green = { r: 34, g: 197, b: 94 };
+
+    if (pct <= 0) return `rgb(${red.r}, ${red.g}, ${red.b})`;
+
+    if (pct <= 50) {
+        const t = pct / 50;
+        return `rgb(${lerp(red.r, yellow.r, t)}, ${lerp(red.g, yellow.g, t)}, ${lerp(red.b, yellow.b, t)})`;
+    } else {
+        const t = (pct - 50) / 50;
+        return `rgb(${lerp(yellow.r, green.r, t)}, ${lerp(yellow.g, green.g, t)}, ${lerp(yellow.b, green.b, t)})`;
+    }
+}
 
 function Home() {
     const navigate = useNavigate();
@@ -17,6 +39,7 @@ function Home() {
     const [selectedTask, setSelectedTask] = useState(null);
     const [deleteId, setDeleteId] = useState(null);
     const [selectedDetail, setSelectedDetail] = useState(null);
+    const [completionStreak, setCompletionStreak] = useState(null);
 
     const token = localStorage.getItem('token');
 
@@ -90,7 +113,15 @@ function Home() {
                 {},
                 { headers: { Authorization: `Bearer ${token}` }}
             );
-        fetchTasks();
+
+            const streakRes = await axios.get(
+                `http://localhost:8001/tasks/${id}/streak`,
+                { headers: { Authorization: `Bearer ${token}` }}
+            );
+
+            setCompletionStreak(streakRes.data.current_streak);
+            fetchTasks();
+
         } catch (err) {
             console.log(err);
         }
@@ -113,6 +144,10 @@ function Home() {
             handleCreate(formData);
         }
     }
+
+    const completedToday = tasks.filter(t => t.completed_today).length;
+    const percentDone = tasks.length === 0 ? 0 : Math.round((completedToday / tasks.length) * 100);
+    const maxStreak = tasks.length === 0 ? 0 : Math.max(...tasks.map(t => t.current_streak || 0));
 
     return (
         <div className="home-page">
@@ -137,14 +172,23 @@ function Home() {
                     <div className="stat-number">{tasks.length}</div>
                     <div className="stat-label">Total Tasks</div>
                 </div>
+
                 <div className="stat-card">
-                    <div className="stat-number">
-                        {tasks.filter(t => t.completed).length}
+                    <div className="stat-number">{percentDone}%</div>
+                    <div className="stat-label">Completed Today</div>
+                    <div className="progress-track">
+                        <div
+                            className="progress-fill"
+                            style={{
+                                width: `${percentDone}%`,
+                                backgroundColor: getBarColor(percentDone)
+                            }}
+                        />
                     </div>
-                    <div className="stat-label">Completed</div>
                 </div>
+
                 <div className="stat-card">
-                    <div className="stat-number">🔥 0</div>
+                    <div className="stat-number">🔥 {maxStreak}</div>
                     <div className="stat-label">Day Streak</div>
                 </div>
             </div>
@@ -212,14 +256,20 @@ function Home() {
             )}
 
             {selectedDetail && (
-        <TaskDetailPopup
-            taskId={selectedDetail}
-            onClose={() => setSelectedDetail(null)}
-        />
-        )}
-        </div>
+                <TaskDetailPopup
+                    taskId={selectedDetail}
+                    onClose={() => setSelectedDetail(null)}
+                />
+            )}
 
-        
+            {completionStreak !== null && (
+                <CompletionPopup
+                    streak={completionStreak}
+                    onClose={() => setCompletionStreak(null)}
+                />
+            )}
+
+        </div>
     );
 }
 

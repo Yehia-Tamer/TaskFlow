@@ -31,11 +31,13 @@ class UserLogin(BaseModel):
     password:str
 
 class TaskResponse(BaseModel):
-    id:int
-    title:str
-    description:Optional[str]=None
-    created_at:datetime
-    owner:UserResponse
+    id: int
+    title: str
+    description: Optional[str] = None
+    created_at: datetime
+    owner: UserResponse
+    completed_today: bool = False
+    current_streak: int = 0
     model_config = ConfigDict(from_attributes=True)
 
 class TaskCreate(BaseModel):

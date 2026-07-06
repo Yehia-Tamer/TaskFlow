@@ -16,8 +16,6 @@ function Navbar({ username }) {
       <div className="navbar-logo" onClick={() => navigate('/')}>TaskFlow</div>
 
       <div className="navbar-nav">
-        <Link to="/" className="nav-link">Dashboard</Link>
-        <Link to="/tasks" className="nav-link">My Tasks</Link>
       </div>
 
       <div className="navbar-right">
