@@ -1,0 +1,109 @@
+/* src/pages/Home.css */
+.home-page {
+    padding: 32px;
+    max-width: 1100px;
+    margin: 0 auto;
+    animation: fadeIn 0.3s ease;
+}
+
+.home-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 28px;
+}
+
+.page-title {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 800;
+    font-size: 26px;
+}
+
+.page-sub {
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 3px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 28px;
+}
+
+.stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    text-align: center;
+    transition: all 0.3s;
+    cursor: default;
+}
+
+.stat-card:hover {
+    border-color: rgba(124, 111, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+.stat-number {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 800;
+    font-size: 32px;
+    background: linear-gradient(135deg, #7c6fff, #ff6b9d);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.stat-label {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 4px;
+}
+
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+}
+
+/* Empty state */
+.empty-state {
+    text-align: center;
+    padding: 80px 20px;
+}
+
+.empty-icon {
+    font-size: 52px;
+    margin-bottom: 16px;
+    opacity: 0.4;
+}
+
+.empty-title {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    margin-bottom: 8px;
+}
+
+.empty-sub {
+    color: var(--muted);
+    font-size: 14px;
+    margin-bottom: 24px;
+}
+
+.progress-track {
+    margin-top: 10px;
+    height: 6px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    border-radius: 999px;
+    transition: width 0.5s ease, background-color 0.5s ease;
+}
