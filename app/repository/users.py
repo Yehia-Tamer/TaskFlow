@@ -18,11 +18,3 @@ def create(request,db):
     db.refresh(user)
     return user
 
-def get(user_id,db,current_user):
-    if(user_id!=current_user.id):
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
-    user = db.query(models.User).filter(models.User.id == user_id).first()
-    if not user:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not allowed")
-    return user
-
