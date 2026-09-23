@@ -45,6 +45,5 @@ uvicorn==0.49.0
 watchfiles==1.2.0
 websockets==16.0
 passlib
-bcrypt
+bcrypt==4.0.1
 python-jose
-email-validator
